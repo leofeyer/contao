@@ -138,7 +138,7 @@ services:
         tags:
             - { name: data_collector, template: '@ContaoCore/Collector/contao.html.twig', id: contao }
 
-    contao.doctrine.dca_schema_provider:
+    contao.doctrine.schema.dca_provider:
         class: Contao\CoreBundle\Doctrine\Schema\DcaSchemaProvider
         arguments:
             - '@contao.framework'
@@ -152,7 +152,7 @@ services:
             - '@contao.doctrine.orm.fail_tolerant_proxy_cache_warmer.inner'
             - '@database_connection'
 
-    contao.doctrine.schema_provider:
+    contao.doctrine.schema.provider:
         class: Contao\CoreBundle\Doctrine\Schema\SchemaProvider
         arguments:
             - '@doctrine.orm.default_entity_manager'
@@ -297,7 +297,7 @@ services:
             - '@contao.image.studio'
             - '@twig'
 
-    contao.insert_tag_parser:
+    contao.insert_tag.parser:
         class: Contao\CoreBundle\InsertTag\InsertTagParser
         public: true
         arguments:
@@ -486,7 +486,7 @@ services:
             - '@database_connection'
             - '@contao.routing.page_registry'
 
-    contao.routing.domain_filter:
+    contao.routing.matcher.domain_filter:
         class: Contao\CoreBundle\Routing\Matcher\DomainFilter
 
     contao.routing.frontend_matcher:
@@ -502,17 +502,17 @@ services:
         tags:
             - routing.loader
 
-    contao.routing.input_enhancer:
+    contao.routing.enhancer.input:
         class: Contao\CoreBundle\Routing\Enhancer\InputEnhancer
         arguments:
             - '@contao.framework'
         tags:
             - contao.page_router_enhancer
 
-    contao.routing.language_filter:
+    contao.routing.matcher.language_filter:
         class: Contao\CoreBundle\Routing\Matcher\LanguageFilter
 
-    contao.routing.locale_candidates:
+    contao.routing.candidates.locale:
         class: Contao\CoreBundle\Routing\Candidates\LocaleCandidates
         arguments:
             - '@contao.routing.page_registry'
@@ -538,7 +538,7 @@ services:
             - [addRouteFilter, ['@contao.routing.domain_filter']]
             - [addRouteFilter, ['@contao.routing.published_filter']]
 
-    contao.routing.page_registry:
+    contao.routing.page.registry:
         class: Contao\CoreBundle\Routing\Page\PageRegistry
         arguments:
             - '@database_connection'
@@ -567,7 +567,7 @@ services:
         tags:
             - { name: router, priority: -200 }
 
-    contao.routing.published_filter:
+    contao.routing.matcher.published_filter:
         class: Contao\CoreBundle\Routing\Matcher\PublishedFilter
         arguments:
             - '@contao.security.token_checker'
@@ -579,7 +579,7 @@ services:
             - '@contao.routing.page_registry'
             - '@?logger'
 
-    contao.routing.url_matcher:
+    contao.routing.matcher.url:
         class: Contao\CoreBundle\Routing\Matcher\UrlMatcher
 
     contao.routing.route_provider:
@@ -616,12 +616,12 @@ services:
     contao.search.indexer.delegating:
         class: Contao\CoreBundle\Search\Indexer\DelegatingIndexer
 
-    contao.security.authentication_failure_handler:
+    contao.security.authentication.failure_handler:
         class: Contao\CoreBundle\Security\Authentication\AuthenticationFailureHandler
         arguments:
             - '@?logger'
 
-    contao.security.authentication_listener:
+    contao.security.authentication.login_listener:
         class: Contao\CoreBundle\Security\Authentication\ContaoLoginAuthenticationListener
         arguments:
             - '@security.token_storage'
@@ -637,7 +637,7 @@ services:
         tags:
             - { name: monolog.logger, channel: security }
 
-    contao.security.authentication_provider:
+    contao.security.authentication.provider:
         class: Contao\CoreBundle\Security\Authentication\Provider\AuthenticationProvider
         abstract: true
         arguments:
@@ -652,7 +652,7 @@ services:
             - '@request_stack'
             - '@contao.security.two_factor.trusted_device_manager'
 
-    contao.security.authentication_success_handler:
+    contao.security.authentication.success_handler:
         class: Contao\CoreBundle\Security\Authentication\AuthenticationSuccessHandler
         arguments:
             - '@contao.framework'
@@ -660,7 +660,7 @@ services:
             - '@security.firewall.map'
             - '@?logger'
 
-    contao.security.backend_access_voter:
+    contao.security.voter.backend_access:
         class: Contao\CoreBundle\Security\Voter\BackendAccessVoter
 
     contao.security.backend_user_provider:
@@ -671,7 +671,7 @@ services:
             - Contao\BackendUser
             - '@?logger'
 
-    contao.security.entry_point:
+    contao.security.authentication.entry_point:
         class: Contao\CoreBundle\Security\Authentication\AuthenticationEntryPoint
         arguments:
             - '@router'
@@ -679,7 +679,7 @@ services:
             - '@contao.framework'
             - '@contao.routing.scope_matcher'
 
-    contao.security.expiring_token_based_remember_me_services:
+    contao.security.authentication.remember_me.expiring_token_based_services:
         class: Contao\CoreBundle\Security\Authentication\RememberMe\ExpiringTokenBasedRememberMeServices
         abstract: true
         arguments:
@@ -692,7 +692,7 @@ services:
         tags:
             - { name: monolog.logger, channel: security }
 
-    contao.security.frontend_preview_authenticator:
+    contao.security.authentication.frontend_preview_authenticator:
         class: Contao\CoreBundle\Security\Authentication\FrontendPreviewAuthenticator
         public: true
         arguments:
@@ -709,22 +709,22 @@ services:
             - Contao\FrontendUser
             - '@?logger'
 
-    contao.security.logout_handler:
+    contao.security.logout.handler:
         class: Contao\CoreBundle\Security\Logout\LogoutHandler
         arguments:
             - '@contao.framework'
             - '@?logger'
 
-    contao.security.logout_success_handler:
+    contao.security.logout.success_handler:
         class: Contao\CoreBundle\Security\Logout\LogoutSuccessHandler
         arguments:
             - '@security.http_utils'
             - '@contao.routing.scope_matcher'
 
-    contao.security.member_group_voter:
+    contao.security.voter.member_group:
         class: Contao\CoreBundle\Security\Voter\MemberGroupVoter
 
-    contao.security.token_checker:
+    contao.security.authentication.token.checker:
         public: true
         class: Contao\CoreBundle\Security\Authentication\Token\TokenChecker
         arguments:
@@ -758,7 +758,7 @@ services:
             - '@scheb_two_factor.trusted_token_storage'
             - '@doctrine.orm.entity_manager'
 
-    contao.security.user_checker:
+    contao.security.user.checker:
         class: Contao\CoreBundle\Security\User\UserChecker
         arguments:
             - '@contao.framework'

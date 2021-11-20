@@ -25,53 +25,23 @@ class LintServiceIdsCommand extends Command
 {
     protected static $defaultName = 'contao:lint-service-ids';
 
-    private static array $ignore = [
-        'listener',
-        'migration',
-        'picker',
-        'runtime',
-        'subscriber',
+    private static array $alternativeNames = [
+        'subscriber' => 'listener',
     ];
 
     private static array $ignoredChunks = [
-        'authentication',
-        'candidates',
-        'data_collector',
         'http_kernel',
-        'insert_tag',
-        'logout',
-        'matcher',
-        'remember_me',
-        'schema',
-        'voter',
     ];
 
     private static array $exceptions = [
-        'contao.assets.assets_context',
-        'contao.assets.files_context',
         'contao.csrf.token_storage',
-        'contao.fragment.forward_renderer',
-        'contao.image.deferred_image_storage',
-        'contao.listener.element_template_options',
-        'contao.listener.module_template_options',
-        'contao.migration.version400.version400_update',
+        'contao.migration.version_400.version_400_update',
         'contao.monolog.handler',
         'contao.monolog.processor',
         'contao.resource_finder',
         'contao.response_context.accessor',
         'contao.response_context.factory',
         'contao.routing.candidates',
-        'contao.routing.input_enhancer',
-        'contao.routing.page_registry',
-        'contao.security.authentication_listener',
-        'contao.security.authentication_provider',
-        'contao.security.backend_user_provider',
-        'contao.security.entry_point',
-        'contao.security.frontend_user_provider',
-        'contao.security.token_checker',
-        'contao.security.user_checker',
-        'contao.session.contao_backend',
-        'contao.session.contao_frontend',
     ];
 
     private string $projectDir;
@@ -102,6 +72,26 @@ class LintServiceIdsCommand extends Command
         $tc = 0;
         $io = new SymfonyStyle($input, $output);
 
+        $allClasses = [];
+        $sharedServiceClasses = [];
+
+        foreach ($files as $file) {
+            $yaml = Yaml::parseFile($file->getPathname(), Yaml::PARSE_CUSTOM_TAGS);
+
+            foreach ($yaml['services'] ?? [] as $config) {
+                if (!isset($config['class'])) {
+                    continue;
+                }
+
+                if (\in_array($config['class'], $allClasses, true)) {
+                    $sharedServiceClasses[] = $config['class'];
+                    continue;
+                }
+
+                $allClasses[] = $config['class'];
+            }
+        }
+
         foreach ($files as $file) {
             $fc = 0;
             $yaml = Yaml::parseFile($file->getPathname(), Yaml::PARSE_CUSTOM_TAGS);
@@ -112,6 +102,11 @@ class LintServiceIdsCommand extends Command
 
             foreach ($yaml['services'] as $serviceId => $config) {
                 if ('_' === $serviceId[0] || !isset($config['class'])) {
+                    continue;
+                }
+
+                // Classes that are used for more than one service can not have the same service id
+                if (\in_array($config['class'], $sharedServiceClasses, true)) {
                     continue;
                 }
 
@@ -142,7 +137,7 @@ class LintServiceIdsCommand extends Command
 
     private function getServiceIdFromClass(string $class): ?string
     {
-        $chunks = explode('\\', Container::underscore($class));
+        $chunks = explode('\\', strtolower(Container::underscore($class)));
 
         foreach ($chunks as &$chunk) {
             $chunk = preg_replace('(^([a-z]+)(\d+)(.*)$)', '$1_$2$3', $chunk);
@@ -194,16 +189,24 @@ class LintServiceIdsCommand extends Command
             if (
                 'contao' === $nameChunk
                 || $category === $nameChunk
+                || $category === (self::$alternativeNames[$nameChunk] ?? '')
                 || \in_array($nameChunk, $chunks, true)
-                || \in_array($nameChunk, self::$ignore, true)
+                || \in_array(self::$alternativeNames[$nameChunk] ?? '', $chunks, true)
             ) {
                 unset($nameChunks[$i]);
+            }
+
+            if (
+                $category === $nameChunk.'_'.($nameChunks[$i + 1] ?? '')
+                || \in_array($nameChunk.'_'.($nameChunks[$i + 1] ?? ''), $chunks, true)
+            ) {
+                unset($nameChunks[$i], $nameChunks[$i + 1]);
             }
         }
 
         $name = implode('_', $nameChunks);
         $path = \count($chunks) ? implode('.', $chunks) : '';
-        $prefix = strtolower($vendor.'_'.$bundle);
+        $prefix = $vendor.'_'.$bundle;
 
         if ('contao_core' === $prefix) {
             $prefix = 'contao';

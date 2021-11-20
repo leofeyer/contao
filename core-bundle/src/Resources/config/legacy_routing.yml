@@ -24,7 +24,7 @@ services:
             - '%contao.prepend_locale%'
             - '%contao.url_suffix%'
 
-    contao.routing.legacy_matcher:
+    contao.routing.matcher.legacy:
         class: Contao\CoreBundle\Routing\Matcher\LegacyMatcher
         decorates: contao.routing.nested_matcher
         arguments:
