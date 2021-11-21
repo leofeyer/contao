@@ -458,13 +458,13 @@ services:
         arguments:
             - '%contao.resources_paths%'
 
-    contao.response_context.accessor:
+    contao.routing.response_context.accessor:
         class: Contao\CoreBundle\Routing\ResponseContext\ResponseContextAccessor
         public: true
         arguments:
             - '@request_stack'
 
-    contao.response_context.factory:
+    contao.routing.response_context.factory:
         class: Contao\CoreBundle\Routing\ResponseContext\CoreResponseContextFactory
         public: true
         arguments:

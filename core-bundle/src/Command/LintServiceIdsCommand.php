@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Contao\CoreBundle\Command;
 
+use Contao\CoreBundle\Config\ResourceFinder;
+use Contao\CoreBundle\Csrf\MemoryTokenStorage;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -25,23 +27,40 @@ class LintServiceIdsCommand extends Command
 {
     protected static $defaultName = 'contao:lint-service-ids';
 
-    private static array $alternativeNames = [
+    /**
+     * @var array<string,string> strip from name if the alias is part of the namespace
+     */
+    private static array $aliasNames = [
         'subscriber' => 'listener',
     ];
 
-    private static array $ignoredChunks = [
-        'http_kernel',
+    private static array $renameNamespaces = [
+        'event_listener' => 'listener',
+        'http_kernel' => '',
+    ];
+
+    /**
+     * @var array<string> strip these prefixes from the last chunk of the service ID
+     */
+    private static array $stripPrefixes = [
+        'contao_table_',
+        'core_',
+    ];
+
+    /**
+     * @var array<class-string> classes that are not meant to be a single
+     *                          service and can therefore not derive the
+     *                          service ID from the class name
+     */
+    private static array $generalServiceClasses = [
+        MemoryTokenStorage::class,
+        ResourceFinder::class,
     ];
 
     private static array $exceptions = [
-        'contao.csrf.token_storage',
+        // The "version_400_" prefix should not be stripped from the name as it
+        // means something different as in the namespace
         'contao.migration.version_400.version_400_update',
-        'contao.monolog.handler',
-        'contao.monolog.processor',
-        'contao.resource_finder',
-        'contao.response_context.accessor',
-        'contao.response_context.factory',
-        'contao.routing.candidates',
     ];
 
     private string $projectDir;
@@ -73,19 +92,26 @@ class LintServiceIdsCommand extends Command
         $io = new SymfonyStyle($input, $output);
 
         $allClasses = [];
-        $sharedServiceClasses = [];
+        $sharedServiceClasses = self::$generalServiceClasses;
+        $classesByServiceId = [];
 
         foreach ($files as $file) {
             $yaml = Yaml::parseFile($file->getPathname(), Yaml::PARSE_CUSTOM_TAGS);
 
-            foreach ($yaml['services'] ?? [] as $config) {
+            foreach ($yaml['services'] ?? [] as $serviceId => $config) {
                 if (!isset($config['class'])) {
                     continue;
                 }
 
+                $classesByServiceId[$serviceId] ??= $config['class'];
+
+                if ($classesByServiceId[$serviceId] !== $config['class']) {
+                    $sharedServiceClasses[] = $config['class'];
+                    $sharedServiceClasses[] = $classesByServiceId[$serviceId];
+                }
+
                 if (\in_array($config['class'], $allClasses, true)) {
                     $sharedServiceClasses[] = $config['class'];
-                    continue;
                 }
 
                 $allClasses[] = $config['class'];
@@ -167,11 +193,9 @@ class LintServiceIdsCommand extends Command
         // The remaining chunks make up the sub-namespaces between the bundle
         // and the class name. We ignore the ones in self::$ignoredChunks.
         foreach ($chunks as $i => &$chunk) {
-            if ('event_listener' === $chunk) {
-                $chunk = 'listener';
-            }
+            $chunk = self::$renameNamespaces[$chunk] ?? $chunk;
 
-            if (\in_array($chunk, self::$ignoredChunks, true)) {
+            if (!$chunk) {
                 unset($chunks[$i]);
             }
         }
@@ -181,6 +205,12 @@ class LintServiceIdsCommand extends Command
         // The first remaining chunk is our category.
         $category = array_shift($chunks);
 
+        foreach (self::$stripPrefixes as $prefix) {
+            if (0 === strncmp($name, $prefix, \strlen($prefix))) {
+                $name = substr($name, \strlen($prefix));
+            }
+        }
+
         // Now we split up the class name to unset certain chunks of the path,
         // e.g. we remove "Listener" from "BackendMenuListener".
         $nameChunks = explode('_', $name);
@@ -189,9 +219,9 @@ class LintServiceIdsCommand extends Command
             if (
                 'contao' === $nameChunk
                 || $category === $nameChunk
-                || $category === (self::$alternativeNames[$nameChunk] ?? '')
+                || $category === (self::$aliasNames[$nameChunk] ?? '')
                 || \in_array($nameChunk, $chunks, true)
-                || \in_array(self::$alternativeNames[$nameChunk] ?? '', $chunks, true)
+                || \in_array(self::$aliasNames[$nameChunk] ?? '', $chunks, true)
             ) {
                 unset($nameChunks[$i]);
             }
