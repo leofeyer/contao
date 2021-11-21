@@ -35,6 +35,7 @@ class LintServiceIdsCommand extends Command
     ];
 
     private static array $renameNamespaces = [
+        'contao_core' => 'contao',
         'event_listener' => 'listener',
         'http_kernel' => '',
     ];
@@ -92,7 +93,7 @@ class LintServiceIdsCommand extends Command
         $io = new SymfonyStyle($input, $output);
 
         $allClasses = [];
-        $sharedServiceClasses = self::$generalServiceClasses;
+        $ignoreClasses = self::$generalServiceClasses;
         $classesByServiceId = [];
 
         foreach ($files as $file) {
@@ -105,13 +106,17 @@ class LintServiceIdsCommand extends Command
 
                 $classesByServiceId[$serviceId] ??= $config['class'];
 
+                // If the same service id gets used for two different classes
+                // Example: contao.routing.candidates
                 if ($classesByServiceId[$serviceId] !== $config['class']) {
-                    $sharedServiceClasses[] = $config['class'];
-                    $sharedServiceClasses[] = $classesByServiceId[$serviceId];
+                    $ignoreClasses[] = $config['class'];
+                    $ignoreClasses[] = $classesByServiceId[$serviceId];
                 }
 
+                // If the same class gets used for two different services
+                // Example: ArrayAttributeBag
                 if (\in_array($config['class'], $allClasses, true)) {
-                    $sharedServiceClasses[] = $config['class'];
+                    $ignoreClasses[] = $config['class'];
                 }
 
                 $allClasses[] = $config['class'];
@@ -131,8 +136,7 @@ class LintServiceIdsCommand extends Command
                     continue;
                 }
 
-                // Classes that are used for more than one service can not have the same service id
-                if (\in_array($config['class'], $sharedServiceClasses, true)) {
+                if (\in_array($config['class'], $ignoreClasses, true)) {
                     continue;
                 }
 
@@ -172,26 +176,23 @@ class LintServiceIdsCommand extends Command
         unset($chunk);
 
         // The first chunk is the vendor name (e.g. Contao).
-        $vendor = array_shift($chunks);
-
-        if ('contao' !== $vendor) {
+        if ('contao' !== array_shift($chunks)) {
             return null;
         }
 
         // The second chunk is the bundle name (e.g. CoreBundle).
-        $bundle = array_shift($chunks);
-
-        if ('_bundle' !== substr($bundle, -7)) {
+        if ('_bundle' !== substr($chunks[0], -7)) {
             return null;
         }
 
-        $bundle = substr($bundle, 0, -7);
+        // Rename "xxx_bundle" to "contao_xxx"
+        $chunks[0] = 'contao_'.substr($chunks[0], 0, -7);
 
         // The last chunk is the class name
         $name = array_pop($chunks);
 
         // The remaining chunks make up the sub-namespaces between the bundle
-        // and the class name. We ignore the ones in self::$ignoredChunks.
+        // and the class name. We rename the ones from self::$renameNamespaces.
         foreach ($chunks as $i => &$chunk) {
             $chunk = self::$renameNamespaces[$chunk] ?? $chunk;
 
@@ -202,9 +203,7 @@ class LintServiceIdsCommand extends Command
 
         unset($chunk);
 
-        // The first remaining chunk is our category.
-        $category = array_shift($chunks);
-
+        // Strip prefixes from the name
         foreach (self::$stripPrefixes as $prefix) {
             if (0 === strncmp($name, $prefix, \strlen($prefix))) {
                 $name = substr($name, \strlen($prefix));
@@ -218,34 +217,20 @@ class LintServiceIdsCommand extends Command
         foreach ($nameChunks as $i => $nameChunk) {
             if (
                 'contao' === $nameChunk
-                || $category === $nameChunk
-                || $category === (self::$aliasNames[$nameChunk] ?? '')
                 || \in_array($nameChunk, $chunks, true)
                 || \in_array(self::$aliasNames[$nameChunk] ?? '', $chunks, true)
             ) {
                 unset($nameChunks[$i]);
             }
 
-            if (
-                $category === $nameChunk.'_'.($nameChunks[$i + 1] ?? '')
-                || \in_array($nameChunk.'_'.($nameChunks[$i + 1] ?? ''), $chunks, true)
-            ) {
+            if (\in_array($nameChunk.'_'.($nameChunks[$i + 1] ?? ''), $chunks, true)) {
                 unset($nameChunks[$i], $nameChunks[$i + 1]);
             }
         }
 
         $name = implode('_', $nameChunks);
-        $path = \count($chunks) ? implode('.', $chunks) : '';
-        $prefix = $vendor.'_'.$bundle;
+        $path = implode('.', $chunks);
 
-        if ('contao_core' === $prefix) {
-            $prefix = 'contao';
-        }
-
-        if ($category === $name) {
-            $category = '';
-        }
-
-        return implode('.', array_filter([$prefix, $category, $path, $name]));
+        return implode('.', array_filter([$path, $name]));
     }
 }
