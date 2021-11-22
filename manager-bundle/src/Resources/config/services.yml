@@ -80,7 +80,7 @@ services:
             - '@kernel'
             - '%kernel.project_dir%'
 
-    contao_manager.security.logout.handler:
+    contao_manager.security.logout_handler:
         class: Contao\ManagerBundle\Security\Logout\LogoutHandler
         arguments:
             - '@?contao_manager.jwt_manager'

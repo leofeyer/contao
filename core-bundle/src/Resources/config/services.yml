@@ -80,14 +80,14 @@ services:
             - '@database_connection'
             - '@contao.framework'
 
-    contao.crawl.escargot.subscriber.broken_link_checker:
+    contao.crawl.escargot.broken_link_checker_subscriber:
         class: Contao\CoreBundle\Crawl\Escargot\Subscriber\BrokenLinkCheckerSubscriber
         arguments:
             - '@translator'
         tags:
             - contao.escargot_subscriber
 
-    contao.crawl.escargot.subscriber.search_index:
+    contao.crawl.escargot.search_index_subscriber:
         class: Contao\CoreBundle\Crawl\Escargot\Subscriber\SearchIndexSubscriber
         arguments:
             - '@contao.search.indexer'
@@ -138,7 +138,7 @@ services:
         tags:
             - { name: data_collector, template: '@ContaoCore/Collector/contao.html.twig', id: contao }
 
-    contao.doctrine.schema.dca_provider:
+    contao.doctrine.dca_schema_provider:
         class: Contao\CoreBundle\Doctrine\Schema\DcaSchemaProvider
         arguments:
             - '@contao.framework'
@@ -152,7 +152,7 @@ services:
             - '@contao.doctrine.orm.fail_tolerant_proxy_cache_warmer.inner'
             - '@database_connection'
 
-    contao.doctrine.schema.provider:
+    contao.doctrine.schema_provider:
         class: Contao\CoreBundle\Doctrine\Schema\SchemaProvider
         arguments:
             - '@doctrine.orm.default_entity_manager'
@@ -458,13 +458,13 @@ services:
         arguments:
             - '%contao.resources_paths%'
 
-    contao.routing.response_context.accessor:
+    contao.routing.response_context_accessor:
         class: Contao\CoreBundle\Routing\ResponseContext\ResponseContextAccessor
         public: true
         arguments:
             - '@request_stack'
 
-    contao.routing.response_context.factory:
+    contao.routing.response_context_factory:
         class: Contao\CoreBundle\Routing\ResponseContext\CoreResponseContextFactory
         public: true
         arguments:
@@ -502,7 +502,7 @@ services:
         tags:
             - routing.loader
 
-    contao.routing.enhancer.input:
+    contao.routing.input_enhancer:
         class: Contao\CoreBundle\Routing\Enhancer\InputEnhancer
         arguments:
             - '@contao.framework'
@@ -512,7 +512,7 @@ services:
     contao.routing.matcher.language_filter:
         class: Contao\CoreBundle\Routing\Matcher\LanguageFilter
 
-    contao.routing.candidates.locale:
+    contao.routing.locale_candidates:
         class: Contao\CoreBundle\Routing\Candidates\LocaleCandidates
         arguments:
             - '@contao.routing.page_registry'
@@ -538,7 +538,7 @@ services:
             - [addRouteFilter, ['@contao.routing.domain_filter']]
             - [addRouteFilter, ['@contao.routing.published_filter']]
 
-    contao.routing.page.registry:
+    contao.routing.page_registry:
         class: Contao\CoreBundle\Routing\Page\PageRegistry
         arguments:
             - '@database_connection'
@@ -579,7 +579,7 @@ services:
             - '@contao.routing.page_registry'
             - '@?logger'
 
-    contao.routing.matcher.url:
+    contao.routing.url_matcher:
         class: Contao\CoreBundle\Routing\Matcher\UrlMatcher
 
     contao.routing.route_provider:
@@ -605,7 +605,7 @@ services:
             - '@contao.routing.backend_matcher'
             - '@contao.routing.frontend_matcher'
 
-    contao.search.indexer.default:
+    contao.search.default_indexer:
         class: Contao\CoreBundle\Search\Indexer\DefaultIndexer
         arguments:
             - '@contao.framework'
@@ -613,15 +613,15 @@ services:
         tags:
             - contao.search_indexer
 
-    contao.search.indexer.delegating:
+    contao.search.delegating_indexer:
         class: Contao\CoreBundle\Search\Indexer\DelegatingIndexer
 
-    contao.security.authentication.failure_handler:
+    contao.security.authentication_failure_handler:
         class: Contao\CoreBundle\Security\Authentication\AuthenticationFailureHandler
         arguments:
             - '@?logger'
 
-    contao.security.authentication.login_listener:
+    contao.security.login_authentication_listener:
         class: Contao\CoreBundle\Security\Authentication\ContaoLoginAuthenticationListener
         arguments:
             - '@security.token_storage'
@@ -637,7 +637,7 @@ services:
         tags:
             - { name: monolog.logger, channel: security }
 
-    contao.security.authentication.provider:
+    contao.security.authentication_provider:
         class: Contao\CoreBundle\Security\Authentication\Provider\AuthenticationProvider
         abstract: true
         arguments:
@@ -652,7 +652,7 @@ services:
             - '@request_stack'
             - '@contao.security.two_factor.trusted_device_manager'
 
-    contao.security.authentication.success_handler:
+    contao.security.authentication_success_handler:
         class: Contao\CoreBundle\Security\Authentication\AuthenticationSuccessHandler
         arguments:
             - '@contao.framework'
@@ -660,7 +660,7 @@ services:
             - '@security.firewall.map'
             - '@?logger'
 
-    contao.security.voter.backend_access:
+    contao.security.backend_access_voter:
         class: Contao\CoreBundle\Security\Voter\BackendAccessVoter
 
     contao.security.backend_user_provider:
@@ -671,7 +671,7 @@ services:
             - Contao\BackendUser
             - '@?logger'
 
-    contao.security.authentication.entry_point:
+    contao.security.authentication_entry_point:
         class: Contao\CoreBundle\Security\Authentication\AuthenticationEntryPoint
         arguments:
             - '@router'
@@ -679,7 +679,7 @@ services:
             - '@contao.framework'
             - '@contao.routing.scope_matcher'
 
-    contao.security.authentication.remember_me.expiring_token_based_services:
+    contao.security.authentication.expiring_token_based_remember_me_services:
         class: Contao\CoreBundle\Security\Authentication\RememberMe\ExpiringTokenBasedRememberMeServices
         abstract: true
         arguments:
@@ -709,22 +709,22 @@ services:
             - Contao\FrontendUser
             - '@?logger'
 
-    contao.security.logout.handler:
+    contao.security.logout_handler:
         class: Contao\CoreBundle\Security\Logout\LogoutHandler
         arguments:
             - '@contao.framework'
             - '@?logger'
 
-    contao.security.logout.success_handler:
+    contao.security.logout_success_handler:
         class: Contao\CoreBundle\Security\Logout\LogoutSuccessHandler
         arguments:
             - '@security.http_utils'
             - '@contao.routing.scope_matcher'
 
-    contao.security.voter.member_group:
+    contao.security.member_group_voter:
         class: Contao\CoreBundle\Security\Voter\MemberGroupVoter
 
-    contao.security.authentication.token.checker:
+    contao.security.authentication.token_checker:
         public: true
         class: Contao\CoreBundle\Security\Authentication\Token\TokenChecker
         arguments:
@@ -758,7 +758,7 @@ services:
             - '@scheb_two_factor.trusted_token_storage'
             - '@doctrine.orm.entity_manager'
 
-    contao.security.user.checker:
+    contao.security.user_checker:
         class: Contao\CoreBundle\Security\User\UserChecker
         arguments:
             - '@contao.framework'
@@ -843,7 +843,7 @@ services:
             - '@twig'
             - '@contao.twig.loader.filesystem'
 
-    contao.twig.loader.fail_tolerant_filesystem:
+    contao.twig.fail_tolerant_filesystem_loader:
         class: Contao\CoreBundle\Twig\Loader\FailTolerantFilesystemLoader
         arguments:
             - []
@@ -851,7 +851,7 @@ services:
         tags:
             - { name: twig.loader, priority: 1 }
 
-    contao.twig.loader.filesystem:
+    contao.twig.filesystem_loader:
         class: Contao\CoreBundle\Twig\Loader\ContaoFilesystemLoader
         arguments:
             - '@cache.system'
@@ -862,7 +862,7 @@ services:
             - { name: twig.loader, priority: 2 }
             - { name: kernel.reset, method: reset }
 
-    contao.twig.loader.filesystem_warmer:
+    contao.twig.filesystem_loader_warmer:
         class: Contao\CoreBundle\Twig\Loader\ContaoFilesystemLoaderWarmer
         arguments:
             - '@contao.twig.loader.filesystem'
@@ -885,27 +885,27 @@ services:
     contao.twig.loader.theme_namespace:
         class: Contao\CoreBundle\Twig\Loader\ThemeNamespace
 
-    contao.twig.runtime.figure_renderer:
+    contao.twig.figure_renderer_runtime:
         class: Contao\CoreBundle\Twig\Runtime\FigureRendererRuntime
         arguments:
             - '@contao.image.studio.figure_renderer'
 
-    contao.twig.runtime.insert_tag:
+    contao.twig.insert_tag_runtime:
         class: Contao\CoreBundle\Twig\Runtime\InsertTagRuntime
         arguments:
             - '@contao.insert_tag_parser'
 
-    contao.twig.runtime.legacy_template_functions:
+    contao.twig.legacy_template_functions_runtime:
         class: Contao\CoreBundle\Twig\Runtime\LegacyTemplateFunctionsRuntime
         arguments:
             - '@request_stack'
             - '@contao.framework'
             - '@contao.routing.scope_matcher'
 
-    contao.twig.runtime.picture_configuration:
+    contao.twig.picture_configuration_runtime:
         class: Contao\CoreBundle\Twig\Runtime\PictureConfigurationRuntime
 
-    contao.twig.runtime.schema_org:
+    contao.twig.schema_org_runtime:
         class: Contao\CoreBundle\Twig\Runtime\SchemaOrgRuntime
         arguments:
             - '@contao.response_context.accessor'

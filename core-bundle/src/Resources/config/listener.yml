@@ -234,7 +234,7 @@ services:
         tags:
             - kernel.event_listener
 
-    contao.listener.menu.backend:
+    contao.listener.backend_menu:
         class: Contao\CoreBundle\EventListener\Menu\BackendMenuListener
         arguments:
             - '@security.helper'

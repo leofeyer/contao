@@ -196,7 +196,7 @@ class LintServiceIdsCommand extends Command
         foreach ($chunks as $i => &$chunk) {
             $chunk = self::$renameNamespaces[$chunk] ?? $chunk;
 
-            if (!$chunk) {
+            if (!$chunk || ($i > 1 && strpos($name, $chunk) !== false)) {
                 unset($chunks[$i]);
             }
         }
