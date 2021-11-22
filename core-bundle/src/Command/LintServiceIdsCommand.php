@@ -28,7 +28,9 @@ class LintServiceIdsCommand extends Command
     protected static $defaultName = 'contao:lint-service-ids';
 
     /**
-     * @var array<string,string> strip from name if the alias is part of the namespace
+     * Strip from name if the alias is part of the namespace.
+     *
+     * @var array<string,string>
      */
     private static array $aliasNames = [
         'subscriber' => 'listener',
@@ -41,7 +43,9 @@ class LintServiceIdsCommand extends Command
     ];
 
     /**
-     * @var array<string> strip these prefixes from the last chunk of the service ID
+     * Strip these prefixes from the last chunk of the service ID.
+     *
+     * @var array<string>
      */
     private static array $stripPrefixes = [
         'contao_table_',
@@ -49,9 +53,10 @@ class LintServiceIdsCommand extends Command
     ];
 
     /**
-     * @var array<class-string> classes that are not meant to be a single
-     *                          service and can therefore not derive the
-     *                          service ID from the class name
+     * Classes that are not meant to be a single service and can therefore not
+     * derive the service ID from the class name.
+     *
+     * @var array<class-string>
      */
     private static array $generalServiceClasses = [
         MemoryTokenStorage::class,
@@ -59,8 +64,6 @@ class LintServiceIdsCommand extends Command
     ];
 
     private static array $exceptions = [
-        // The "version_400_" prefix should not be stripped from the name as it
-        // means something different as in the namespace
         'contao.migration.version_400.version_400_update',
     ];
 
@@ -106,15 +109,13 @@ class LintServiceIdsCommand extends Command
 
                 $classesByServiceId[$serviceId] ??= $config['class'];
 
-                // If the same service id gets used for two different classes
-                // Example: contao.routing.candidates
+                // The same service ID is used for two different classes (e.g. contao.routing.candidates).
                 if ($classesByServiceId[$serviceId] !== $config['class']) {
                     $ignoreClasses[] = $config['class'];
                     $ignoreClasses[] = $classesByServiceId[$serviceId];
                 }
 
-                // If the same class gets used for two different services
-                // Example: ArrayAttributeBag
+                // The same class is used for two different services (e.g. ArrayAttributeBag).
                 if (\in_array($config['class'], $allClasses, true)) {
                     $ignoreClasses[] = $config['class'];
                 }
@@ -203,7 +204,7 @@ class LintServiceIdsCommand extends Command
 
         unset($chunk);
 
-        // Strip prefixes from the name
+        // Strip prefixes from the name.
         foreach (self::$stripPrefixes as $prefix) {
             if (0 === strncmp($name, $prefix, \strlen($prefix))) {
                 $name = substr($name, \strlen($prefix));
