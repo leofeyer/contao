@@ -91,8 +91,6 @@ class OptIn implements OptInInterface
                 foreach ($related as $table => $id) {
                     /** @var class-string<Model> $class */
                     $class = $adapter->getClassFromTable($table);
-
-                    /** @var Model $model */
                     $model = $this->framework->getAdapter($class);
 
                     if (null !== $model->findMultipleByIds($id)) {
