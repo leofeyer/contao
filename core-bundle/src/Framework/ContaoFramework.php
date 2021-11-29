@@ -146,7 +146,7 @@ class ContaoFramework implements ContaoFrameworkInterface, ContainerAwareInterfa
      *
      * @param class-string<T> $class
      *
-     * @return Adapter<T>
+     * @return Adapter<T>&T
      */
     public function getAdapter($class): Adapter
     {
