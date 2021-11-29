@@ -84,6 +84,7 @@ class ModelArgumentResolver implements ArgumentValueResolverInterface
             return $GLOBALS['objPage'];
         }
 
+        /** @var Model $model */
         $model = $this->framework->getAdapter($type);
 
         return $model->findByPk((int) $value);
