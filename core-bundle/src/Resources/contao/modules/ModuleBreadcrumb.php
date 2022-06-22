@@ -227,7 +227,7 @@ class ModuleBreadcrumb extends Module
 					'@type' => 'ListItem',
 					'position' => ++$position,
 					'item' => array(
-						'@id' => $item['href'] ?: './',
+						'@id' => $item['href'] ?: (System::getContainer()->get('request_stack')->getCurrentRequest()?->getBasePath() ?? '') . '/',
 						'name' => $htmlDecoder->inputEncodedToPlainText($item['link'])
 					)
 				);
