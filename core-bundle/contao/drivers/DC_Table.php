@@ -2347,7 +2347,7 @@ class DC_Table extends DataContainer implements ListableDataContainerInterface, 
 
 			foreach ($this->jumpTargets as $jumpId=>$jumpLabel)
 			{
-				$targets .= '<li><a href="#' . $jumpId . '">' .  $jumpLabel. '</a></li>';
+				$targets .= '<li><a href="#' . $jumpId . '">' . $jumpLabel . '</a></li>';
 			}
 
 			$targets .= '</ul></div>';
