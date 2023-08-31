@@ -294,6 +294,11 @@ abstract class DataContainer extends Backend
 	protected $intCurrentPid;
 
 	/**
+	 * @var array
+	 */
+	protected $jumpTargets = array();
+
+	/**
 	 * Current record cache
 	 * @var array<int|string, array<string, mixed>|AccessDeniedException>
 	 */
