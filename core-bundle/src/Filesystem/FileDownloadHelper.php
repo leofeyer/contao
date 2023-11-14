@@ -59,13 +59,10 @@ class FileDownloadHelper
      */
     public function generateInlineUrl(string $url, string $path, array|null $context = null): string
     {
-        return $this->generate(
-            $url,
-            [
-                self::PARAM_PATH => $path,
-                self::PARAM_CONTEXT => null !== $context ? serialize($context) : null,
-            ],
-        );
+        return $this->generate($url, [
+            self::PARAM_PATH => $path,
+            self::PARAM_CONTEXT => null !== $context ? serialize($context) : null,
+        ]);
     }
 
     /**
@@ -81,15 +78,12 @@ class FileDownloadHelper
             HeaderUtils::makeDisposition(HeaderUtils::DISPOSITION_ATTACHMENT, $fileName, 'f');
         }
 
-        return $this->generate(
-            $url,
-            [
-                self::PARAM_PATH => $path,
-                self::PARAM_DISPOSITION => HeaderUtils::DISPOSITION_ATTACHMENT,
-                self::PARAM_FILE_NAME => $fileName,
-                self::PARAM_CONTEXT => null !== $context ? serialize($context) : null,
-            ],
-        );
+        return $this->generate($url, [
+            self::PARAM_PATH => $path,
+            self::PARAM_DISPOSITION => HeaderUtils::DISPOSITION_ATTACHMENT,
+            self::PARAM_FILE_NAME => $fileName,
+            self::PARAM_CONTEXT => null !== $context ? serialize($context) : null,
+        ]);
     }
 
     /**
@@ -112,7 +106,7 @@ class FileDownloadHelper
             return new Response('The requested resource does not exist.', Response::HTTP_NOT_FOUND);
         }
 
-        if (null !== $onProcess) {
+        if ($onProcess) {
             $context = StringUtil::deserialize($request->query->get(self::PARAM_CONTEXT, ''), true);
             $response = $onProcess($file, $context);
 

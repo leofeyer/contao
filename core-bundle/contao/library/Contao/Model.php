@@ -427,7 +427,7 @@ abstract class Model
 
 				if (\in_array($type, array(Types::INTEGER, Types::SMALLINT, Types::FLOAT, Types::BOOLEAN), true))
 				{
-					$types[strtolower($table->getName())][strtolower($column->getName())] = $type;
+					$types[$table->getName()][$column->getName()] = $type;
 				}
 			}
 		}
@@ -467,7 +467,7 @@ abstract class Model
 			}
 		}
 
-		return match (self::$arrColumnCastTypes[strtolower(static::$strTable)][strtolower($strKey)] ?? null)
+		return match (self::$arrColumnCastTypes[static::$strTable][$strKey] ?? null)
 		{
 			Types::INTEGER, Types::SMALLINT => (int) $varValue,
 			Types::FLOAT => (float) $varValue,
