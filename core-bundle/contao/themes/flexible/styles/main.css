@@ -63,10 +63,6 @@ body.popup {
 	position: sticky;
 	top: 0;
 	z-index: 3;
-	transition: transform .2s ease;
-	-webkit-transform: none;
-	transform: none;
-	will-change: transform;
 }
 
 #header h1 {
@@ -2980,6 +2976,13 @@ fieldset.collapsed > legend {
 
 /* Handheld */
 @media (max-width: 767px) {
+	#header {
+		transition: transform .2s ease;
+		-webkit-transform: none;
+		transform: none;
+		will-change: transform;
+	}
+
 	#header.down {
 		-webkit-transform: translateY(-40px);
 		transform: translateY(-40px);
