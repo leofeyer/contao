@@ -38,6 +38,11 @@ html[data-color-scheme="dark"] {
 	--icon-invisible: url("icons/invisible--dark.svg");
 }
 
+/* Account for the sticky header and the jump links bar */
+html {
+	scroll-padding-top: 75px;
+}
+
 /* Body */
 body {
 	background: var(--body-bg);
@@ -53,6 +58,15 @@ body.popup {
 	min-height: 40px;
 	text-align: left;
 	background: var(--header-bg);
+	width: 100%;
+	padding: 0;
+	position: sticky;
+	top: 0;
+	z-index: 3;
+	transition: transform .2s ease;
+	-webkit-transform: none;
+	transform: none;
+	will-change: transform;
 }
 
 #header h1 {
@@ -726,7 +740,7 @@ h2.sub_headline {
 	background: var(--panel-bg);
 	border-bottom: 1px solid var(--content-border);
 	position: sticky;
-	top: 0;
+	top: 40px;
 	z-index: 2;
 }
 
@@ -2920,21 +2934,8 @@ fieldset.collapsed > legend {
 
 /* Tablet */
 @media (max-width: 991px) {
-	#header {
-		width: 100%;
-		padding: 0;
-		position: fixed;
-		top: 0;
-		z-index: 2;
-		transition: transform .2s ease;
-		-webkit-transform: none;
-		transform: none;
-		will-change: transform;
-	}
-
 	#container {
 		display: block;
-		padding-top: 40px;
 	}
 
 	#main, #left {
@@ -2974,10 +2975,6 @@ fieldset.collapsed > legend {
 
 	#tmenu .burger {
 		display: inline;
-	}
-
-	.jump-targets {
-		top: 40px;
 	}
 }
 
