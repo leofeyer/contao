@@ -62,7 +62,7 @@ body.popup {
 	padding: 0;
 	position: sticky;
 	top: 0;
-	z-index: 3;
+	z-index: 4;
 }
 
 #header h1 {
@@ -737,7 +737,7 @@ h2.sub_headline {
 	border-bottom: 1px solid var(--content-border);
 	position: sticky;
 	top: 40px;
-	z-index: 2;
+	z-index: 3;
 }
 
 .jump-targets .inner {
