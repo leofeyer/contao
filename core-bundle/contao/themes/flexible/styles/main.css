@@ -722,21 +722,27 @@ h2.sub_headline {
 
 /* Jump targets */
 .jump-targets {
+	padding-top: 1px;
 	background: var(--panel-bg);
 	border-bottom: 1px solid var(--content-border);
+	position: sticky;
+	top: 0;
+	z-index: 1;
+	overflow-x: scroll;
 }
 
 .jump-targets ul {
 	margin: 0;
-	padding: 5px 0;
+	padding: 0;
 	list-style: none;
+	white-space: nowrap;
 }
 
 .jump-targets li {
 	display: inline-block;
-	padding: 5px 10px;
+	padding: 8px 10px;
 	white-space: nowrap;
-	font-size: .8rem;
+	font-size: .75rem;
 }
 
 /* Boxes */
@@ -795,6 +801,9 @@ h2.sub_headline {
 
 .tl_formbody_submit {
 	border-top: 1px solid var(--content-border);
+	position: sticky;
+	bottom: 0;
+	z-index: 1;
 }
 
 .tl_submit_container {

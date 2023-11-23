@@ -2360,7 +2360,7 @@ class DC_Table extends DataContainer implements ListableDataContainerInterface, 
 		}
 
 		// Begin the form (-> DO NOT CHANGE THIS ORDER -> this way the onsubmit attribute of the form can be changed by a field)
-		$return = $targets . $version . ($this->noReload ? '
+		$return = $version . $targets . ($this->noReload ? '
 <p class="tl_error">' . $GLOBALS['TL_LANG']['ERR']['submit'] . '</p>' : '') . Message::generate() . (Input::get('nb') ? '' : '
 <div id="tl_buttons">
 <a href="' . $strBackUrl . '" class="header_back" title="' . StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['backBTTitle']) . '" accesskey="b" onclick="Backend.getScrollOffset()">' . $GLOBALS['TL_LANG']['MSC']['backBT'] . '</a>
