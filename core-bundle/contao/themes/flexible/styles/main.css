@@ -727,7 +727,7 @@ h2.sub_headline {
 	border-bottom: 1px solid var(--content-border);
 	position: sticky;
 	top: 0;
-	z-index: 1;
+	z-index: 2;
 	overflow-x: scroll;
 }
 
@@ -803,7 +803,7 @@ h2.sub_headline {
 	border-top: 1px solid var(--content-border);
 	position: sticky;
 	bottom: 0;
-	z-index: 1;
+	z-index: 2;
 }
 
 .tl_submit_container {
@@ -2953,6 +2953,10 @@ fieldset.collapsed > legend {
 
 	#tmenu .burger {
 		display: inline;
+	}
+
+	.jump-targets {
+		top: 40px;
 	}
 }
 
