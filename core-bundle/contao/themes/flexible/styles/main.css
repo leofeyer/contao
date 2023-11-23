@@ -756,6 +756,12 @@ h2.sub_headline {
 	font-size: .75rem;
 }
 
+.jump-targets button {
+	padding: 0;
+	background: none;
+	border: none;
+}
+
 .jump-targets:before, .jump-targets:after {
 	content: "";
 	display: block;

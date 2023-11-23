@@ -2020,7 +2020,7 @@ class DC_Table extends DataContainer implements ListableDataContainerInterface, 
 				{
 					list($key, $cls) = explode(':', $legends[$k]) + array(null, null);
 
-					$legend = "\n" . '<legend data-contao--fieldset-target="jump" data-action="click->contao--fieldset#toggle" data-contao--fieldset-id-param="' . $key . '">' . ($GLOBALS['TL_LANG'][$this->strTable][$key] ?? $key) . '</legend>';
+					$legend = "\n" . '<legend data-contao--jump-targets-target="section" data-action="click->contao--toggle-fieldset#toggle contao--jump-targets:scrollto->contao--toggle-fieldset#open">' . ($GLOBALS['TL_LANG'][$this->strTable][$key] ?? $key) . '</legend>';
 				}
 
 				if (isset($fs[$this->strTable][$key]))
@@ -2032,7 +2032,7 @@ class DC_Table extends DataContainer implements ListableDataContainerInterface, 
 					$class .= (($cls && $legend) ? ' ' . $cls : '');
 				}
 
-				$return .= "\n\n" . '<fieldset' . ($key ? ' id="pal_' . $key . '"' : '') . ' class="' . $class . ($legend ? '' : ' nolegend') . '">' . $legend;
+				$return .= "\n\n" . '<fieldset class="' . $class . ($legend ? '' : ' nolegend') . '" data-controller="contao--toggle-fieldset" data-contao--toggle-fieldset-id-value="' . $key . '" data-contao--toggle-fieldset-table-value="' . $this->strTable . '" data-contao--toggle-fieldset-collapsed-class="collapsed">' . $legend;
 				$thisId = '';
 
 				// Build rows of the current box
@@ -2367,8 +2367,8 @@ class DC_Table extends DataContainer implements ListableDataContainerInterface, 
 		}
 
 		$return = '
-<div data-controller="contao--fieldset" data-contao--fieldset-collapsed-class="collapsed" data-contao--fieldset-table-value="' . $this->strTable . '">
-	<div class="jump-targets"><div class="inner"><ul data-contao--fieldset-target="navigation"></ul></div></div>
+<div data-controller="contao--jump-targets">
+	<div class="jump-targets"><div class="inner"><ul data-contao--jump-targets-target="navigation"></ul></div></div>
 	' . $return . '
 </div>';
 
