@@ -2020,9 +2020,7 @@ class DC_Table extends DataContainer implements ListableDataContainerInterface, 
 				{
 					list($key, $cls) = explode(':', $legends[$k]) + array(null, null);
 
-					$this->jumpTargets['pal_' . $key] = $GLOBALS['TL_LANG'][$this->strTable][$key] ?? $key;
-
-					$legend = "\n" . '<legend data-toggle-fieldset="' . StringUtil::specialcharsAttribute(json_encode(array('id' => $key, 'table' => $this->strTable))) . '">' . ($GLOBALS['TL_LANG'][$this->strTable][$key] ?? $key) . '</legend>';
+					$legend = "\n" . '<legend data-contao--fieldset-target="jump" data-action="click->contao--fieldset#toggle" data-contao--fieldset-id-param="' . $key . '">' . ($GLOBALS['TL_LANG'][$this->strTable][$key] ?? $key) . '</legend>';
 				}
 
 				if (isset($fs[$this->strTable][$key]))
@@ -2345,22 +2343,8 @@ class DC_Table extends DataContainer implements ListableDataContainerInterface, 
 </script>';
 		}
 
-		$targets = '';
-
-		if ($this->jumpTargets)
-		{
-			$targets .= '<div class="jump-targets"><div class="inner"><ul>';
-
-			foreach ($this->jumpTargets as $jumpId=>$jumpLabel)
-			{
-				$targets .= '<li><a href="#' . $jumpId . '">' . $jumpLabel . '</a></li>';
-			}
-
-			$targets .= '</ul></div></div>';
-		}
-
 		// Begin the form (-> DO NOT CHANGE THIS ORDER -> this way the onsubmit attribute of the form can be changed by a field)
-		$return = $version . $targets . ($this->noReload ? '
+		$return = $version . ($this->noReload ? '
 <p class="tl_error">' . $GLOBALS['TL_LANG']['ERR']['submit'] . '</p>' : '') . Message::generate() . (Input::get('nb') ? '' : '
 <div id="tl_buttons">
 <a href="' . $strBackUrl . '" class="header_back" title="' . StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['backBTTitle']) . '" accesskey="b" onclick="Backend.getScrollOffset()">' . $GLOBALS['TL_LANG']['MSC']['backBT'] . '</a>
@@ -2381,6 +2365,12 @@ class DC_Table extends DataContainer implements ListableDataContainerInterface, 
   });
 </script>';
 		}
+
+		$return = '
+<div data-controller="contao--fieldset" data-contao--fieldset-collapsed-class="collapsed" data-contao--fieldset-table-value="' . $this->strTable . '">
+	<div class="jump-targets"><div class="inner"><ul data-contao--fieldset-target="navigation"></ul></div></div>
+	' . $return . '
+</div>';
 
 		return $return;
 	}
