@@ -58,8 +58,6 @@ body.popup {
 	min-height: 40px;
 	text-align: left;
 	background: var(--header-bg);
-	width: 100%;
-	padding: 0;
 	position: sticky;
 	top: 0;
 	z-index: 4;
@@ -2989,18 +2987,6 @@ fieldset.collapsed > legend {
 
 /* Handheld */
 @media (max-width: 767px) {
-	#header {
-		transition: transform .2s ease;
-		-webkit-transform: none;
-		transform: none;
-		will-change: transform;
-	}
-
-	#header.down {
-		-webkit-transform: translateY(-40px);
-		transform: translateY(-40px);
-	}
-
 	#header h1 a {
 		min-width: 22px;
 		padding: 12px;
