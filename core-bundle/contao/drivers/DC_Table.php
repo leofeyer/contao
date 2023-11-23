@@ -2349,14 +2349,14 @@ class DC_Table extends DataContainer implements ListableDataContainerInterface, 
 
 		if ($this->jumpTargets)
 		{
-			$targets .= '<div class="jump-targets"><ul>';
+			$targets .= '<div class="jump-targets"><div class="inner"><ul>';
 
 			foreach ($this->jumpTargets as $jumpId=>$jumpLabel)
 			{
 				$targets .= '<li><a href="#' . $jumpId . '">' . $jumpLabel . '</a></li>';
 			}
 
-			$targets .= '</ul></div>';
+			$targets .= '</ul></div></div>';
 		}
 
 		// Begin the form (-> DO NOT CHANGE THIS ORDER -> this way the onsubmit attribute of the form can be changed by a field)

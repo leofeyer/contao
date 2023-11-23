@@ -728,7 +728,28 @@ h2.sub_headline {
 	position: sticky;
 	top: 0;
 	z-index: 2;
+}
+
+.jump-targets .inner {
 	overflow-x: scroll;
+}
+
+.jump-targets:before, .jump-targets:after {
+	content: "";
+	display: block;
+	width: 10px;
+	height: 100%;
+	position: absolute;
+	top: 0;
+}
+
+.jump-targets:before {
+	background: linear-gradient(-90deg, transparent 0, var(--panel-bg) 50%);
+}
+
+.jump-targets:after {
+	right: 0;
+	background: linear-gradient(90deg, transparent 0, var(--panel-bg) 50%);
 }
 
 .jump-targets ul {
