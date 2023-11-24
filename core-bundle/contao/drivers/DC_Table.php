@@ -2023,13 +2023,13 @@ class DC_Table extends DataContainer implements ListableDataContainerInterface, 
 					$legend = "\n" . '<legend data-action="click->contao--toggle-fieldset#toggle">' . ($GLOBALS['TL_LANG'][$this->strTable][$key] ?? $key) . '</legend>';
 				}
 
-				if (isset($fs[$this->strTable][$key]))
+				if ($legend && (($fs[$this->strTable][$key] ?? null) || $cls == 'hide'))
 				{
-					$class .= ($fs[$this->strTable][$key] ? '' : ' collapsed');
+					$class .= ' collapsed';
 				}
-				else
+				elseif ($cls)
 				{
-					$class .= (($cls && $legend) ? ' ' . $cls : '');
+					$class .= ' ' . $cls;
 				}
 
 				$return .= "\n\n" . '<fieldset class="' . $class . ($legend ? '' : ' nolegend') . '" data-controller="contao--toggle-fieldset" data-contao--toggle-fieldset-id-value="' . $key . '" data-contao--toggle-fieldset-table-value="' . $this->strTable . '" data-contao--toggle-fieldset-collapsed-class="collapsed" data-contao--jump-targets-target="section" data-contao--jump-targets-label-value="' . ($GLOBALS['TL_LANG'][$this->strTable][$key] ?? $key) . '" data-action="contao--jump-targets:scrollto->contao--toggle-fieldset#open">' . $legend;
