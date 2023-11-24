@@ -25,11 +25,11 @@ export default class extends Controller {
 
         this.sectionTargets.forEach((el) => {
             const action = document.createElement('button');
-            action.innerText = el.innerText;
+            action.innerText = el.getAttribute(`data-${this.identifier}-label-value`);
             action.addEventListener('click', (event) => {
                 event.preventDefault();
                 this.dispatch('scrollto', { target: el });
-                el.parentNode.scrollIntoView();
+                el.scrollIntoView();
             })
 
             const li = document.createElement('li');
