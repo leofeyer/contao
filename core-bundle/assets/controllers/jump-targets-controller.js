@@ -21,7 +21,7 @@ export default class extends Controller {
             return;
         }
 
-        const links = [];
+        const links = document.createElement('ul');
 
         this.sectionTargets.forEach((el) => {
             const action = document.createElement('button');
@@ -34,10 +34,9 @@ export default class extends Controller {
 
             const li = document.createElement('li');
             li.append(action);
-            links.push(li);
+            links.append(li);
         });
 
-        this.navigationTarget.innerHTML = '';
-        this.navigationTarget.append(...links);
+        this.navigationTarget.replaceChildren(links);
     }
 }

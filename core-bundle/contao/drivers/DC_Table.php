@@ -2368,7 +2368,7 @@ class DC_Table extends DataContainer implements ListableDataContainerInterface, 
 
 		$return = '
 <div data-controller="contao--jump-targets">
-	<div class="jump-targets"><div class="inner"><ul data-contao--jump-targets-target="navigation"></ul></div></div>
+	<div class="jump-targets"><div class="inner" data-contao--jump-targets-target="navigation"></div></div>
 	' . $return . '
 </div>';
 
