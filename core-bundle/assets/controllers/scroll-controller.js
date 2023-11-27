@@ -9,11 +9,11 @@ export default class extends Controller {
     }
 
     connect () {
-        this.element.addEventListener('scroll', this.onScroll, { passive: true });
+        window.addEventListener('scroll', this.onScroll, { passive: true });
     }
 
     disconnect () {
-        this.element.removeEventListener('scroll', this.onScroll);
+        window.removeEventListener('scroll', this.onScroll);
     }
 
     up () {
