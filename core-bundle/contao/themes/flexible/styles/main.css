@@ -38,9 +38,9 @@ html[data-color-scheme="dark"] {
 	--icon-invisible: url("icons/invisible--dark.svg");
 }
 
-/* Account for the sticky header and the jump links bar */
+/* Account for the jump links bar */
 html {
-	scroll-padding-top: 75px;
+	scroll-padding-top: 35px;
 }
 
 /* Body */
@@ -58,9 +58,6 @@ body.popup {
 	min-height: 40px;
 	text-align: left;
 	background: var(--header-bg);
-	position: sticky;
-	top: 0;
-	z-index: 4;
 }
 
 #header h1 {
@@ -734,7 +731,7 @@ h2.sub_headline {
 	background: var(--panel-bg);
 	border-bottom: 1px solid var(--content-border);
 	position: sticky;
-	top: 40px;
+	top: 0;
 	z-index: 3;
 }
 
