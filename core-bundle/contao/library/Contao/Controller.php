@@ -1271,7 +1271,7 @@ abstract class Controller extends System
 	protected function getParentEntries($strTable, $intId)
 	{
 		// No parent table
-		if (empty($GLOBALS['TL_DCA'][$strTable]['config']['ptable']))
+		if (empty($GLOBALS['TL_DCA'][$strTable]['config']['ptable']) && empty($GLOBALS['TL_DCA'][$strTable]['config']['dynamicPtable']))
 		{
 			return '';
 		}
@@ -1279,12 +1279,13 @@ abstract class Controller extends System
 		$db = Database::getInstance();
 		$arrParent = array();
 		$strParentTable = $strTable;
+		$dynamicPtable = $GLOBALS['TL_DCA'][$strTable]['config']['dynamicPtable'] ?? null;
 
 		do
 		{
 			// Get the pid
 			$objParent = $db
-				->prepare("SELECT pid FROM " . $strParentTable . " WHERE id=?")
+				->prepare("SELECT pid" . ($dynamicPtable ? ", ptable" : "") . " FROM " . $strParentTable . " WHERE id=?")
 				->limit(1)
 				->execute($intId);
 
@@ -1294,8 +1295,20 @@ abstract class Controller extends System
 			}
 
 			// Store the parent table information
-			$strParentTable = $GLOBALS['TL_DCA'][$strParentTable]['config']['ptable'];
+			$strParentTable = $GLOBALS['TL_DCA'][$strParentTable]['config']['ptable'] ?? null;
 			$intId = $objParent->pid;
+
+			if ($objParent->ptable)
+			{
+				$strParentTable = $objParent->ptable;
+			}
+
+			if (!$strParentTable)
+			{
+				break;
+			}
+
+			$dynamicPtable = $GLOBALS['TL_DCA'][$strParentTable]['config']['dynamicPtable'] ?? null;
 
 			// Add the log entry
 			$arrParent[] = $strParentTable . '.id=' . $intId;
@@ -1303,7 +1316,7 @@ abstract class Controller extends System
 			// Load the data container of the parent table
 			$this->loadDataContainer($strParentTable);
 		}
-		while ($intId && !empty($GLOBALS['TL_DCA'][$strParentTable]['config']['ptable']));
+		while ($intId);
 
 		if (empty($arrParent))
 		{
