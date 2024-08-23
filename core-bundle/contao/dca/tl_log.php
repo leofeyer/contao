@@ -150,7 +150,7 @@ class tl_log extends Backend
 				break;
 
 			case 'CRON':
-				$class .= ' tl_green';;
+				$class .= ' tl_green';
 				break;
 
 			case 'ERROR':
@@ -162,12 +162,12 @@ class tl_log extends Backend
 				{
 					foreach ($GLOBALS['TL_HOOKS']['colorizeLogEntries'] as $callback)
 					{
-						$label = System::importStatic($callback[0])->{$callback[1]}($row, $label);
+						$label = System::importStatic($callback[0])->{$callback[1]}($row, $label, $class);
 					}
 				}
 				break;
 		}
 
-		return sprintf('<div class="%s">%s</div>', $class, $label);
+		return '<div class="' . $class . '">' . $label . '</div>';
 	}
 }
