@@ -83,8 +83,11 @@ body {
 }
 
 .login-providers .passkey button {
-	padding-left: 36px;
 	background-image: var(--icon-passkey);
+}
+
+.login-providers .tl_submit {
+	padding-left: 36px;
 	background-position: 12px center;
 	background-repeat: no-repeat;
 }
