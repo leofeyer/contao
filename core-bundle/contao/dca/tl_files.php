@@ -170,7 +170,7 @@ $GLOBALS['TL_DCA']['tl_files'] = array
 		),
 		'uuid' => array
 		(
-			'label'					  => &$GLOBALS['TL_LANG']['MSC']['fileUuid'],
+			'label'                   => &$GLOBALS['TL_LANG']['MSC']['fileUuid'],
 			'sql'                     => "binary(16) NULL"
 		),
 		'type' => array
@@ -198,8 +198,9 @@ $GLOBALS['TL_DCA']['tl_files'] = array
 		(
 			'sql'                     => array('type' => 'boolean', 'default' => true)
 		),
-		'preview' => array(
-			// input_field_callback
+		'preview' => array
+		(
+			// input_field_callback from FileImagePreviewListener
 			'exclude' => false,
 		),
 		'name' => array
